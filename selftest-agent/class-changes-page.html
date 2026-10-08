@@ -1,0 +1,458 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>MDC Class Changes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap">
+<style>
+/* Layout: white MDC header with logo top-left; below it a 2-column workspace (schedule left, requests + updates right) that stacks on phones. */
+:root{
+  --bg:#F2F6FA; --surface:#FFFFFF; --fg:#0E2237; --muted:#4F6378; --line:#D6E1EB;
+  --blue:#0065B3; --navy:#003A6B; --tint:#E6F0F9; --accent:#0065B3;
+  --btn:#0065B3; --btn-fg:#FFFFFF; --btn-hover:#004E8C;
+  --hdr:#FFFFFF; --hdr-line:#0065B3;
+  --ok:#17713F; --ok-bg:#E1F3E8; --warn:#7A4E00; --warn-bg:#FFF0D1; --bad:#B3261E; --bad-bg:#FBE5E3; --info-bg:#E6F0F9;
+  --shadow:0 1px 2px rgba(0,40,80,.08),0 4px 14px rgba(0,40,80,.06);
+  --f-display:'Lora',Georgia,serif; --f-body:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1624; --surface:#112338; --fg:#E8F0F8; --muted:#9DB2C7; --line:#25415E;
+  --blue:#6DB5F2; --navy:#9CCBF5; --tint:#173A5C; --accent:#7DBEF5;
+  --btn:#1F78C8; --btn-fg:#FFFFFF; --btn-hover:#2F8BDA; --hdr:#0D2A47; --hdr-line:#3B8FE0;
+  --ok:#6FD39B; --ok-bg:#12331F; --warn:#F2C46B; --warn-bg:#3A2C0C; --bad:#FF9D96; --bad-bg:#40191A; --info-bg:#14304D;
+  --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1624; --surface:#112338; --fg:#E8F0F8; --muted:#9DB2C7; --line:#25415E;
+  --blue:#6DB5F2; --navy:#9CCBF5; --tint:#173A5C; --accent:#7DBEF5;
+  --btn:#1F78C8; --btn-fg:#FFFFFF; --btn-hover:#2F8BDA; --hdr:#0D2A47; --hdr-line:#3B8FE0;
+  --ok:#6FD39B; --ok-bg:#12331F; --warn:#F2C46B; --warn-bg:#3A2C0C; --bad:#FF9D96; --bad-bg:#40191A; --info-bg:#14304D;
+  --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;line-height:1.25}
+h2{font-size:1.35rem;font-weight:600}
+p{margin:0}
+button,select,textarea,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* header */
+.hdr{background:var(--hdr);border-bottom:4px solid var(--hdr-line);position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
+.hdr-in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px;min-width:0}
+.logo-tile{background:#fff;border-radius:6px;padding:2px;line-height:0;flex:none}
+.logo img{width:62px;height:auto;display:block}
+.logo-t{font-family:var(--f-display);font-weight:600;font-size:1.15rem;color:var(--navy);line-height:1.2}
+.logo-t small{display:block;font-family:var(--f-body);font-weight:400;font-size:.8rem;color:var(--muted)}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tabs,.seg{display:flex;background:var(--tint);border-radius:999px;padding:4px;gap:2px;flex-wrap:wrap}
+.tabs button,.seg button{border:0;background:transparent;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:500;color:var(--muted)}
+.tabs button[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--btn);color:var(--btn-fg)}
+.who{font-size:.85rem;color:var(--muted);text-align:right;line-height:1.3}
+.who b{display:block;color:var(--fg);font-weight:600}
+
+/* prototype bar */
+.proto{background:#003A6B;color:#fff}
+.proto-in{max-width:1180px;margin:0 auto;padding:8px 16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:.82rem}
+.proto .seg{background:rgba(255,255,255,.16);padding:3px}
+.proto .seg button{color:#fff;padding:5px 12px;font-size:.8rem}
+.proto .seg button[aria-pressed="true"]{background:#fff;color:#003A6B}
+.proto .lnk{margin-left:auto;background:none;border:0;color:#fff;text-decoration:underline;cursor:pointer;font-size:.8rem}
+
+main{max-width:1180px;margin:0 auto;padding:24px 16px 56px;display:grid;gap:24px}
+.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.stack{display:grid;gap:24px;min-width:0}
+
+.banner{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-radius:12px;background:var(--info-bg);border:1px solid var(--line)}
+.banner.late{background:var(--warn-bg);border-color:transparent}
+.banner .dot{flex:none;width:12px;height:12px;border-radius:50%;background:var(--ok);margin-top:7px}
+.banner.late .dot{background:var(--warn)}
+.banner b{display:block}
+.banner span{color:var(--muted);font-size:.9rem}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);min-width:0}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px 12px;flex-wrap:wrap}
+.panel-h p{color:var(--muted);font-size:.88rem}
+.panel-b{padding:4px 20px 20px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;border:2px solid var(--btn);background:var(--btn);color:var(--btn-fg);padding:10px 18px;font-weight:600;cursor:pointer;min-height:44px}
+.btn:hover{background:var(--btn-hover);border-color:var(--btn-hover)}
+.btn.ghost{background:transparent;color:var(--accent);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--accent);background:var(--tint)}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--bad)}
+.btn.danger:hover{background:var(--bad-bg)}
+.btn.sm{padding:6px 14px;min-height:36px;font-size:.88rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* schedule */
+.course{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;padding:16px 0;border-top:1px solid var(--line);align-items:center}
+.course:first-child{border-top:0}
+.c-code{font-weight:600;color:var(--navy)}
+.c-name{font-weight:500}
+.c-meta{color:var(--muted);font-size:.85rem}
+.c-act{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:560px){.course{grid-template-columns:minmax(0,1fr)}}
+.credits{display:flex;gap:18px;color:var(--muted);font-size:.88rem;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.credits b{color:var(--fg)}
+
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:500;background:var(--tint);color:var(--fg);white-space:nowrap}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)}
+.chip.bad{background:var(--bad-bg);color:var(--bad)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+
+/* requests */
+.req{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:8px;background:var(--surface)}
+.req+.req{margin-top:12px}
+.req-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.req-title{font-weight:600}
+.req-id{color:var(--muted);font-size:.78rem}
+.now{font-size:.9rem;color:var(--muted)}
+.now b{color:var(--fg);font-weight:600}
+details summary{cursor:pointer;color:var(--accent);font-size:.88rem;font-weight:500;padding:4px 0}
+.tl{list-style:none;margin:8px 0 0;padding:0}
+.tl li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;padding-bottom:14px;position:relative;font-size:.88rem}
+.tl li:not(:last-child)::before{content:"";position:absolute;left:10px;top:22px;bottom:0;width:2px;background:var(--line)}
+.tl i{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font-style:normal;font-size:.7rem;font-weight:700}
+.tl .done i{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.tl .act i{border-color:var(--accent);background:var(--tint);color:var(--accent)}
+.tl .no i{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.tl .skip{opacity:.55}
+.tl small{display:block;color:var(--muted)}
+.audit{margin:6px 0 0;padding:0;list-style:none;font-size:.8rem;color:var(--muted);display:grid;gap:3px}
+.confirm{background:var(--warn-bg);border-radius:10px;padding:12px 14px;display:grid;gap:10px;font-size:.9rem}
+.confirm .row{display:flex;gap:8px;flex-wrap:wrap}
+.result{font-size:.9rem;background:var(--ok-bg);color:var(--ok);padding:8px 12px;border-radius:8px}
+.result.bad{background:var(--bad-bg);color:var(--bad)}
+.empty{padding:22px 8px;text-align:center;color:var(--muted)}
+
+/* notifications */
+.note{display:grid;grid-template-columns:10px minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:.9rem}
+.note:first-child{border-top:0}
+.note .u{width:10px;height:10px;border-radius:50%;margin-top:7px;background:transparent}
+.note.new .u{background:var(--accent)}
+.note time{display:block;color:var(--muted);font-size:.78rem}
+
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(5,20,36,.55);z-index:40;display:grid;place-items:start center;overflow-y:auto;padding:24px 16px}
+.modal{background:var(--surface);color:var(--fg);border-radius:16px;max-width:680px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35);margin-block:auto}
+.m-h{padding:20px 24px 12px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.x{border:0;background:var(--tint);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;color:var(--fg);flex:none}
+.m-b{padding:8px 24px 20px;display:grid;gap:16px}
+.m-f{padding:16px 24px 24px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)}
+.opt{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;align-items:start}
+.opt:has(input:checked){border-color:var(--accent);background:var(--tint)}
+.opt:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.opt input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--blue)}
+.opts{display:grid;gap:10px}
+.sum{background:var(--tint);border-radius:12px;padding:14px 16px;display:grid;gap:8px}
+.sum div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;font-size:.92rem}
+.sum span{color:var(--muted)}
+.why{border-radius:12px;padding:14px 16px;background:var(--warn-bg);display:grid;gap:6px;font-size:.92rem}
+.why.good{background:var(--ok-bg)}
+.route{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.route .chip{font-size:.85rem;padding:5px 12px}
+.route .arrow{color:var(--muted)}
+label.f{display:grid;gap:6px;font-weight:500;font-size:.9rem}
+textarea{width:100%;min-height:84px;border:2px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);resize:vertical}
+.stepper{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+
+/* approver */
+.alert{background:var(--warn-bg);border-radius:10px;padding:10px 14px;font-weight:500;font-size:.92rem}
+.ap{display:grid;gap:12px;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--surface)}
+.ap+.ap{margin-top:14px}
+.ap-act{display:flex;gap:8px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:#003A6B;color:#fff;padding:12px 20px;border-radius:12px;z-index:60;box-shadow:0 8px 30px rgba(0,0,0,.3);max-width:calc(100% - 32px);font-size:.92rem}
+.scope{font-size:.82rem;color:var(--muted);text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){.modal{animation:up .18s ease-out}@keyframes up{from{transform:translateY(10px);opacity:.4}to{transform:none;opacity:1}}}
+
+
+</style>
+
+<header class="hdr"><div class="hdr-in">
+  <div class="logo"><span class="logo-tile"><img alt="Miami Dade College" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAAEICAIAAAD5o37MAAAusElEQVR42u1de1wTZ7qeBgIJl3BLwCAgCKiAqECtGItyqaKtd/fIrlZLXarrsbVa7Y1aa1tL3V1caS2nq7WWanWLPeK1CiqCaOOVi6CAEgwCkoYgkARMSADPH9MzTmaSyUBuk+R7fv39aobJ3PLM+73v+73v9zz39OlTfp2YF+EH2SVe33WpsOKRfd67l5tTV48K+ehMp4VyWUFs1xFeLiEj3AM5blxvl5HeLhwPhs3csiMEQbtP1caEsplODhCAPWFnRvyqnDLkY596sLa5u7a5G7ObO5MeHewVGeQVM9pnNJc1KcTbuuneLlXsK6p/a14UYID9IJDjOicugMyecoWaX9fOr2tHBoHIIK+Jwd7jg71nxYy0LtvvCP9v96na12eOdWM4Ah7YCXLeiB/eF/vUg5WNjysbH8Mfw7isxAlcXoRfQtQI6vPHEXmDc07c2ZI2CfDATky7saI1gUgmEMn2Fd1jsxhzJwfOmxJE5TiQhvxrX1G9RKoEVACmfXjokCnzihuWZBWnfHTmUGljj7Kf0nTvUw9+feouoILNIzLI06QGuLa5e/P312PXH/sw72ZDm4yidIcg6ODFBqFYDghh2/j3uhfNcBa5Qp1X3DBzy5mPfyqnjtdAw0QhX50ABt6WwYvwDfdnme10ferBfUX3JrxZ8GHeTSqQnob5nH/5AdUGIACrM+145BU3TN543OKWnobflJVfCWhhk0iM5lowTQ5b+skbj2cX1FgqkNVC98KKR8DA2yS+W59g8WvoUw/uPFYTu/7Y7lN3zU96mtatW38qB+SwMcyfEkSdaSC5Qp115PbSHcVmTo1op3tpjYhfJwYUsSXsefNFql1SZePjpA9/PVTaaGG6QxC0Pb8KUMRmkJYwmpoX1qce3Pz99dd3XTKPY0MjePPOlrcCotgAnOm0nNXxVL7CwopHyZm/msGhoBH8LbugGnDFBpCROo76F9ki6V2SVWxqn4KI7rXN3QX8JkAXq4Y7k25FlX+5p2uXZF0wXW6eRvznHf97GzDGqrF5cbR1XTC/rj0580xJtcgCdG+R9JozcAYwumlfPXuc1V12h0y57J8lpggdaXr32PHLbYVqAFAHmHYzY1VO2W5jl+jSyLxqBy82AOpYHdgshjWadjSyjtzOLqgxK90hCNp9qpaa1foABPjHqhds4C52HqsxIuNJ0b1Dpvz3mTpAICsC+c5rq2D8x0aqaqGR3G9vIWjtsyaYoj3PgthXdM8oNp4s3eUKNWjtsxaEcVm2t07WzmM1hkeuNPK7HrzYAAy8VWD/huk2eV9ZR27vLaw3E9371IP/OlYDyERxxIT6mLM9z+yMrzJkBoo2pL3zikHvNtXx48YZNnx3ferBNd9cGXb7EW2oX9jxCygroC54Eb62tIKprjByVU7Z8DLjQ6b7yevNoLWPsrBU57WZIRDJ3vj6sjnoDoHebapiduxImzftCEprRMNITQ6H7oUVj0BrHwWxe+00u7rfncdqhhq20oZ9JkAvSiEtYbQdLuC8fs/VISXHh0l3fl27iSqSAYYHirfnmQgdMuXfcq+YnO4QBG0HHjxlkJ4Sbrf3zq9rJ+/ED5/utc3doHebCnCm075Mn2zPT+Cb03dJZgtphpwG9G5TAW/OtXeVoT714Ad5N0xO99rmbtDaZ1m4M+lW3bJkRJeGDBVpBp7mq5N3QGufBQG4jmDHL7f1TrUaSvcWSS9o7bMUvNycrL09z4gg04REM/w0u0/VAgNvEezMiAcPAQ29TUg0o7xV+4rqwbM2M2ypPc9Y0NuERDPKaUDvtvlhY+15xgJxExLNWG9Vzok74Fmb07TbXnueUUAsIEkz1mmALCsw7dQx8LqakGjmeasAjAhTC6PagIHXlYOnmeetAjAi7KSHwxAcKG7QGkzSjPtWAVlWU8PMwqhWCrlC/cP5e6alOwRkWYFpp44HXyIwOd0h0NpnSlhWGNW60CLpxffcGZ/uQJbVdKCCMKoV4chlocnpDgFZVtOAUsKoVoEzt1owAatJ6A5kWU0BCgqjUj9gPXHtocnpDgFZVmODssKoFEcBX2gOugNZViOC+sKolAW/rh09F0Qz3ZlAa5+xYBXCqJTF6RvN5qA7kGU1CqxLGJWaBt4cdIeALKsxANrzDMTVejHSfmRaugNZVgMB2vMMR596sLKxwxx0h4Asq2EA7XnG9WdMTncgyzpssFkM0J5nLH/GTHSHQGvfcGEbwqhUQLmgA3YxzEF3IMs6DIDOa1O47zTznA/Isg4VoD3P6AbefHQHsqxDAmjPMzoaRXLz0R0CsqxDAejhMDrut0nNSncgy0oSti2MaikI2mRmpTsEZFnJwbaFUS0FuUItFMtpZj4rkGUlBmjPMx1EnU/MTXcgy0oM0J5nOgjFPTTznxX0buvC7NiRoD3Ppqw7BGRZdcPehFHNjMcyJc0iJwayrHjYpzCqOdHZ02cZugNZVgxAe54Z0GEp6w4BWVZNgPY8M6C923J0B7KsaNMO2vPMgL7+AZoFTw96t2EAYVTzQNFnUboDWVYICKOa07qrLUp3CMiygs5r88LCdLdzWVY2iwE6r80GVb+lrTtk37KsoD3PnHBydLA83e1WlhW059mdM4MYeDvs3QbteWaGM92BEnS3Q1nWMC4LtOeZGUxnatAdsj9Z1v0bpgP+mT8xQBW625Usa2SQJ2jPMz88XJxo1Lka+5FlBZ3XFgHLhU4hutuJLCsQRrUUfD2ZNEpdkD3IsgLTbikEsl1pVLsm227tmx07EnReW4zuHDfK0d22ZVlBe54FwfV2oVHwsmxVlhUIo1oWYVwWFeluq7KsQBjVgmCzGG4MRxo1L872ZFnTU8IB5yyI8aO8IIrUzOBhY7KsznTal+mTAecsiCgq0x2yrdY+0HltcUQGelKa7jYjywqEUamAmFAfStMdshVZVtCeZ3EEclxD/NypTncbkGUFwqhUAG/cH7XWNIpfqLXLsgJhVCpg+vgR1kF3q5ZlBcKoFEFClJXQHbLm1j7QeU0FRAZ5InVKVkB3K5VlBZ3XFEHSBH/k3zSruGJrlGUFndcUwdwXgqyM7lYnywqEUakzxk4K8bYyukPWJssKejgogvlTRqE/Wg3drUiWFQijUtOTsSa6Q9YjywqEUanjUqI9GSujO2QNsqxAGJU6SEsYjdliZXSnviwrEEalCJzptEVTg62b7hC1e7eBMCp1kBobgB9mrY/uVJZlBZ3X1MHaVyLxG2nWeCfUlGUFwqjUQUyoDyZItWK6U1CWFQijUgpvzdOu7kaz0vuhmiwraM+jDiKDPHVVK1kr3SklywqEUSmFzYsn6PoTzXrvijq920AY1SpMu3XTnSKyrEAY1VpMu3XTHaKGLCvgOnWQGM0l7jGwbrpbXJYVCKNSB8502mevxhHvQ7P2m7SsLCtoz6MOMlLH6S1EtXq6W1CWFbTnUQdsFmPDgvF6d6PZwK1aqncbtOdRB1+vmUpmStsW6G4RWVYgjEodpCWMTprAJbMnzTZu2PyyrEAYlTpuzPaVz5Pc2UbobmZZViCManVujE3RHTKvLCvovKYI0lPCSboxtkZ3s8myAmFUiiCMy9q6LHZIX6HZ0v2bR5YVmHYqwJ1J379hOtPJwX7pDpm+tQ8Io1IEe958cRhjrK3R3dSyrKA9jwrIXDpxSC67zdIdMqUsKxBGpQJmx47U1axkj3Q3nSwrEEa1OCKDPP/HgNiJZpMPxRSyrEAY1eII5Lj+/F7yUMNT26e70WVZgTAqFbie/36ygXkCmq0+HeO29oHOa8uCzWLkv58Mq+cBumuBEWVZgTCqxe36ya0zDee6LdMdMp4sK2jPsyBiQn1+/STVKFy3cbobRZYVCKNaEInR3KOZLxlxXo9m28/LcFlWIIxqKcyOHTmMMgG7pruBsqxAGNVSmD8l6IeNM4zLddunO2RYax/ovLYI1s2NNNGMnu3TfdiyrKDz2vxgsxiH300yXR6MZg8PcXiyrKDz2szgRfhezHp5eLVfgO7PMAxZViCMak4402mZSycaNwljv3SHhi7LCno4zIYwLuv4x7OGXeQI6K4FQ5JlBcKoZjPqmxZFn9s+R6vSBqC7QSAvywqEUc2AxGhuyZevbF4cbfRsI6D7HyAjywqEUU2NQI5r7lref95LMlZpAKC7dpCRZQXCqCb1XtbNjby0Y+5iXrBFLoBmb0+cuHcbCKOajugZqWNv7lq4JW2SOb0XDOzup4VlWXUlGUHntSmQnhL+zqJoKriI9mjJdh6r0Up3IIxqdIu+Ijl8/bwo6sRC9vjrwrKsmNk7IIxqREQGeS6MH/Xn6aFUC/rt1Jhtz6/E0B205xmOMC5rQfyoJdOCzZ9yAXQnAizLilSAAWFUw1m+IH4U9efm7NdVzS6oRugOhFGH57HMiQu0CpYDuj+TZQXCqOSteGSQ5/hRXuNHeY8f5WWNk3F2nYj46uSdqEBPwHU83Jl0P09mANs12NctZIT7+FFeE0J8bCBt5QhB0AvhHE9XJ/v8XWPD2PbceZ25dKK3O4Pp5ODl5uxMp3E8mJ6uTm5MugVngkyK554+fQqMGYCdgAYeAQCgOwAAoDsAAKA7AACgOwAAoDsAAKA7AACgOwAAoDuATUOhGjhU2khy5QjyAM07ANSCUCzff/5+ftkDuUKd/dcpxi2dd4QgqEfZXy18rPXPLgz68Ja8qRJ2PlGqtf5Ja+NcQ5uspLotkONm26uQCsVyfl0708lhzvOBRqlLUagGmE4OCtVAa0evRKpA/4nr7ULZNgs8+HVifl17uaCjtEaEbDR66Y4jBEHhbxwh2OPT5bFDLaLaW1j/yaEKrX/ycnPatz4Bw/hDpY2bv78O/zsm1OfMtlSb5Dq/TrzsnyV96kEIggI5rhezXhlGjeHZ8lZ+nVjQJmuXKlokvXKFmnj/QI5rINs1MsiLF+GXGM2lZu1XlbBzSVYxfjvT2cjexx8lYhKpsqFN+nuX4pNDFR0yjbUU3Zn0298sJv+YFKqBuLePdfWo0BsTo7lZrz2vy9hErytAn/Twu0kmXQbWUliSdYFf1458zFw6cUgLI27Pr8o9Xavrr5FBnp+/GseL8IMtvUAkE7RJ+XXtaGPpTKctjA9+e0EUBa2+QjVwrb593be/oZlzNDPFuAvT/vH2cDwYcLV+2Z3f8y8/QO8hV6jP3mohvw7O2VstGK5DEPT+f03U9YgVqgHMC9bW+cQmrXt3r8ZjaXs8tNtMSxidPIE7IcRHIJKt3n25RdKL/uvOjHjY7WQ6OYT7s8L9WVBcwFvzonqU/SeuPdzxy+0OmbJPPZh/+UH+5QfpKeGrZo2lVBcS08khaQJ3yhhOYcUjtC9t2syMViu+79w98kc8VCrAb/RwoRPcZ2I0F22BeBG+Nkn3pAn+6I/zpgQN6evh/ixehJ8bw3FSiPf8KaPQf3Km03SFWG4Mx+WJoRezXp4dOxLZmFfcMHPLGeMqLRsFHq7OJj0+lu6OjlpSk5WNj/WuNYcOxRKjuc50jeNInxC5mF+vmTp/SpA7kx4Z5Hn841lWFGANCZsWRaenhHu5OcGLJBoyTPtqNs656PNxOR6MHzbOWDc3EtnSpx5clVNmuDKhdQH7mPr7ByEImj8l6OT1ZvT2AxcbPn81joRpb4QgaGVKeLmgA47JYOjK0iA/hom0eCgFppPDl+mTjSI276o5yvcPkOrR2ZI2qVehzit+ps22+fvr3u7O9qPJQ8N70hAErX0lErM9v+wBmcPllz3wcnPCPz409QEsiC/TJ6NdRwiC3t5z1eizOVZE934vN6dJId4xoT6YgFWv5vrZ8tYOmXLJtBAIgpzpGjGAUj1giquXSJUNbTJ+nZhfJx7qb3aotBF/R1XCTvJHqxJ2Vgk7h6H6ZFlkvfY82tWUK9RIFpjkMx/SUyJIxcC/XZWw00DtW+SAQrGc+EfBOjMq9YCPOwOCoOWJYZWNjzEBK3F+5kBxAwRBK5PDh33FJdWi9XuuXt05nyAh3aPs/+H8PXhKApN1dmfSl/CCty6L1Zs2LakWbf7+enpKOHJHh0obvzp5B53ucGfSV88e91pKOGaFiUOljYdKBeiHE8hxTY0NIL8YYpWw861v+X9/fbJF5J9C/NwzUsehc5r8uvYCfhPBjyuRKvcU1lc2dmB8VAiCvNycVs0cS341h7PlrcevNlU+eNwi6XWm0yKDvFokvR0yJS/CNyN1XEtHz1Bvp6FNtv/cvRsNktrmbkz4/pfpoWkzQtFBPJZVMoXa3YUOQdBiXvCnhyvQfIIDVl3ZK6FYXlojQmRemM4ahFP06VE27VH2f/FzJexWijqf6DrLodLGL/Iru3pUkUGeO9InJ0SNYDo7vvXtb3D2Sq5Q5xU3dPb0EUcC2QU1O1HCNRKp8rVdlzDvNny0ncdqTlx7eG77HPj96VH2v/avUnTuHEaLpHdf0b38sgdHPkzROwm9+9TdrCO39YbvJsXyxFBMCn/X8Tu66J5dUPPN6bt96kFehO+3615MiBqh6OtHnlhXj2rnsRqlekDvMmxVws5N+67BpFw3N3J5YiiSkxCK5XvP1q/KKRvSXaA5w2YxNi2Kfilm5NiRHhAEldaIjpQ15hU35BU38CJ8kWIErDPT3auCf1qmk0Pa9NGYv+7XnZE8+lsTPCboGmgILnpvYf3UTSfRIZTW3ZZkXdj8/fWuHlUYl3X6k9TFvGCOB8ON4bh77TT06HzyerOu01UJOxPeO43mulAsT848U9n4OCbUhxfhG8hxxXxFIJJ9drgC3nPO1kJ+XTsvwjcjdWx6Sjje31uRXUogWVzAb0p47zTMdTImwKQGHnPxApGsStiJN2Hw44K5fjTzpTlxAW4MR44H46vVU4cU2h0qbVz4+TmY6/s3TN+SNgmdfwvxc/8yfXJG6ljyt8CvEyOcSUsYfWPXgs2LoyeFeDOdHJhODnPiAn7YOCM9JRweu+Z/dh52b/DOzCCL+UfUv2rmmH1FGvz+T1mjLlfhyJUH7kw6YiGcHTX26dWWmYGHyH1F9WQCWbRZPbBJQz7cjeEYF8ZGG93Wjl7M+HC2vPVAcQN6ihGCoBsNkuLqtvGjvD57NQ7ZXyJVfpFfhZ5ryytucGXS88sepEz0P7BpBvp3qhJ2Lvz8HHL9HTLl4VIBpuaiR9l/uFSw+1QtZjbNspgTF4AZ0C5UPkIPTT3K/pU7LwlEMthj+fGdRPTO4f4sNouB3FGHTAlX72g9F7qoJHPpRF2JoPf/NBGuDCPjESFDQUyoz5fpk7WeOm1GKPw+dMiUf8u9cjTzJS3WHUn1h/i5Y2Z8+tSDWgPWkmpRi6T3ZVTZk5Nm3r1PW6j6t9wruadryXD9w7ybCJtnx47EJ+bZLA2nuRdnOFskPdIn2Lne2ubumNE+/3kvCf1ucDwYOavjMcYv93TtW/Mic1bHY049KcR70yINt7WoAjt38/f/vY0vzbA4xo/COl13H2pY9ze+vgxzHYKgJdNC8NGUr6fGMx8YfKprTEO4zovwJaibcGM4TiMxw1gl7Fybe+XZT7OWp+s1Q6e/4VXOaTiHVeWOmgHFLwOtddL0QPF9CILSZ47RdYlaOX0086XqbxZj6KI1KkD7OfM0JxT/P6WtZ55l9exxZ7al5q7lYbZvX/G81v3xv4quOrk/Tw9Ff7z/CDsf9/mrcQ3fLc3+6xTM1Jul6e6FpXtLN9p+oUdCONuGASb5pivG/SDvJgGdMAjguOk9ZuaPNxE68SJ8dU1KSqTK7flV6C0/lzU64nmJvo05cQHoMUtrwCqRKgsrHoVxWeihkGQikuPB2Lw4+sfiBgLjV98qRf69bm6kISpWCVEj0B8DOa66cinPh7EJRg/MLTjTacgPoHUcg2fyL1S2ogtCLAvMZcMBNyrd8eyZZ/91yrB1T7ccvIU4J+5Mut75LA8XJ71uDNoHKxd0LMm6oHVPfBKJX9fuiHkhIAhiaDL1tZTwnZoCvPvP3UNPDf5c1ghB0IrkMIKr7CPMu48ZySKge2I0N3PpxD71oOFrK2PIjQkwCPYkhq8nE1OwNWzTZU4QXPaiqcGyJ2pnOm3uC0HDrumQSJXoufk4TQuiFSwXPTVhBzTzGX3qQXyijIBmjppBlRp/Sjzdj/Kb0AHrwRKBM522TDMng3Gn4NoEnTfJJLpJppOD3kJZhcr4WQ53Jp1M2EQeek2XmdGtWbjqjvoV4FHXwOOfq9QYyqJw7tNQ0aPsxyQbctfyhjTaaynkwtRjcDwY6GI6SHOGlV8nbpH0psYGEHcqEE+bOdEN7TnATDFYEKr+AcgaoFANYF5mP0/mkJgn0Fc1WHZHg5q+Bq8Hf/nu78Te6dDo3iXv07rTypQxugLWI5eF+HANgiAnTT/BFNYXjmK351e98M4JJIcAQBKtHVg3hoyzASdGPv6pPHb9Mb1DH8ZBdTW4eL0Tx8+htjtp0r1HO92TJnAx8y9wwNqj7D9+rYnNYuhtPlIZu2amSti5JOsCb/MpCIJy3sDmDQH0oqS6DbNl+vgR+r4iSvnozNIvi309GHkbp+On5DBo71ZqklVpMN2VuPBAMaQjOJJ0OTJmjcW0n+4/d298sHefevDNuVqKZBiaSTel8SoihWL5jl9uF1W0ZqSO+/e6F+GYcoy/B74KAIAAmPkBZzptVqzOtElDm2zrT+Xlgo7Ni6OXJYbBjiubxSAToD9jv8G1dPjU51ALMRxJvn/LEsOyjlShMztH+U03GiQQBC2ZFqzXHTeWRwvXb0AQ9MOGGTbZz2oewF046C0L44O1Rl9IXYqXmxOZiiDNzA8D7WTWNncZeNn4dPCNe+1DuiQayffPjeG4MD4YE7DWNncnRnPJJKoMr/CUSJUpH52B6zcyl04CXDcEX524i9ny9oIorUY9OfNXeI4vd+20oWbfA9kaideapi4DaTDCi4n3r4bvu8sJhwatk6YrU7SX+2KmOfsM890lUuUrnxYh6ZcVuBrjYRSO2i0a2mSY7vt1cyPxNquhTfbKtiLYXQnkuOLti96yCEwwQKZlghgxoWzMzHRpjQhf2UaW7uJuBaSjnAuCoEkh3pFBnugtBPNkmLy7yjDffcvBW4ib6OXmhK+RwE/dA+gaZpdnl6C3hHFZWmt3/5Z7Bcm94L0IhWpAr+M+KzYAw86vTt4xxMAznRySorFvXeaPN4dJd3iCicASr5qpUaKJrxDWhT4DfPceZT96cg6/qge/TkydAiwnRwusW0Q+NPrv3CuYFpYDm2bgd6sSdqKnMvCPl4yddmM4YopkWiS9mCnLoeINXOVSZeNjTG0MwbCmQXfZEzWxB7+YF4yeeyPfuKToGz7d8Tl1fp0YbWbwd6trAsFUJrPPwlNLfepBgjp75EG9vusSumjHmU7L2zhda+gl0lzqp0XSi+7T61H2f3XyDs7h1JITXDN7nJebxlxy7ulaguUPhL/r6QaE10LDbMw9XUvMeIVqYM03V7ILqjXofudhFwRBrZIegtEEsehI45JWdGqm8OUKFZFx0hxPMOW7rriphPd/uFkl7OxR9sPZd/kTNcbLOlB8X6EaUKgGsgtq0O8GhhPEYw56GmVgcJCQbQNav4UBpk7OkGFdhFt5Cj/jiLHWS7IuoLnuzqQffjeJfPfg5u+vw8+8pFqUnPkrm8XA5N33n78PP+EP824iy7RwPBiH30vGuDSbv7++Ye81fDvp2fJWTItPl7xPIlW+vusS+kf8es3UMC4Lz/iXtxVp9eNLqkUzPjgtEMlyVk99xqS9hfXwmFVSIxKK5bryLSuTw+GeD12NS/A9Y/JcfepBgsa/WwKiPoMAtpYOozlbC+F/z58StDMjvlr4GL3IYGHFoxc2npArVO5Mp9dQwfSJaw8xRksiVWqtBkM/X9iD0vVMqoSdGIpXCTu1JjHuPtTIxJXdES1PDB1e4H7kCrZ7KLugOiFqBD6ZyK8TH7ksxMSms2NH/mPVFIIyuHEBHrjjtCPPPCN1bObSSQX8JnRP976ie0UVrS2S3sggz63LYtEh3+F3k5DFMWHAi5nFhPqM8fdgezDuPuwqF3T4eTJ5Eb5o5ryfd6NF0hvIcQ33f3Y9HA9GwUcv4fstKxsfz9laGMhxjQr0DPX36FWo77dJa5q65Ap1WsLo7SufZzo5PFf54PHdh137z99D+2psFmP8KK+4MLYznZaROg4TGr6+69ItweMbuxZgtje0yU5ceyh9oiqtFuE9kJhQn+QJ/hAEIYWNewvrZU/UJ6491LrzwvhRSRP84T0/zLuJb+1zZ9I/WRaLMGbNN1cwa+OEcVn7N0wP92cJxfKjvzVdrRfjq+cCOa68cX6pcQEwVyRS5c9ljfy69jsPuzAOayDHNWa0z8KpwfCecId4haDjluAxZk82i8GL8E2NDUiIGsHxYBTwmx78Ltd19qUvjn4pZiSZHB98bXcedhVVtGrtH2CzGK+lhDvTaeNHeTe0ScsFHfy6dsy1kV8u7y//KMHUY8Gn+HrNVCRL8/K2IgzneBG+yNwf5q3b8N01gugWfgNvCTrQHauJ0dyVKeG6VnLNLqjZW1hPXMvAZjE+XR6LlJE9l5z5a21zd2SQJ0Ynvr1bCbOQnz0Pb9W0GkWYcO5Mepg/C399CtUA/GgyUsd+/mpcQ5ts+vunYWbjd27p6G2R9MJ7wt/dsPcqwmZ3Jj1t+uhVM8egLwy9TyDHNWPW2BXJ4fCR4V5sLzeniEBP/FXVNne5M50Obk6cFOINd4Vp3RPOHDs6PAevYMyvEy/JKnZn0qODtRT61bV09w883fPmi5PHcJIzf4VtHuYJQxDU3auqbe6G20D18g/p6WazGGNGaufr/UcyNL/h5X/ZLEa4v0dcGDt+nC/5pW0xfejwu4RZl0EiVf4t9wq8TxiXtXHheOL6xL2F9UUVrZhK9Mggzy1pMfArJBTLeZtPsVmMuZMDV88Zp3dKRyJV/ljccLVejDmmO5M+LcL3pZiAxbxg9C1bk0i8QjVw75HUw4VO8BQkUmV3r4pSi31aNXqU/QKRjPiZw1HskMrihWI5HH7gBQR0uYJkRr9HnU8gCBrp7aLLT7MmugMAGAigzQQA6A4AAOgOAADoDgAA6A4AAOgOAADoDgAA6A4AAOgOAADoDgAA6A4AAOgOAOgOAADoDgAA6A4AAOhuvxCK5S9vK9IlKYHebUnWhZSPzoAnZk442gbD4NYYjgfTUn1MCtVAAb8JkaPBrIyA2a3sjgjuN8V31AMAumPJza9rL7sjEohkLZJerZ25YVzWi5F+44O9CaSqjMXygxcbiipaMW3X+LZUrW2aTnQwugK66yBW7ulaRLTMy81pWWJY8gQu19uF48GEF5woqRYdKL5fWPFIIJIhqxsczUwxqRZ7n3qgpgm7ti1GfkehGnBl0OtaujErCODfCgCTwjp6VfcW1qNleD9dHqtL9hE2/5k/3kIWjZg/JYhYM95w9Cj7l+4oRi9BofWkCtXAq9kl6HFgduzIHzbOACwEoeoz7qZ8dAaR4Q3kuJ79bDYB1yEICvFz/897SWkJf6x2ZgYdGzeGY8YsjdUzteq8Mp0c9AqLAtivM3O2vPXtPVfRwpz57yeT9MVzVsffb5NWNj7Gry9nCuCXHtcKrrcL4Byw7lpQwG9alVOGjkR1rd+pCz9unOHOpHf1qPQuF2o4XMjpbLk6OwLOAbpjUSXsfGffNfSW9JTwoUacHA/GnjdfjAn1caA9B35pAIo6Mz3K/hXZpegkhjOd9s6i4ajaJk3gAlkbAErTPefEHcxCnhmp4zgGi9ASQKEauFbf/luduEOqFHcrWC70QI5biJ+7qdP25NHQJqtp6qxt6W6R9HTIlGwWw9eTOS7Ac0H8KGIBZzQkUuXlu78jB4EgaIy/x6zYgOFZhIY22Y37EqFYjr6kmNE+c54PJL8Spb3TXSJV7iuqx2xE0iymGEm++LnyKL9JrlDDy/YuiB/V1vmk7I4o93QtBEFhXNbShJA/Tw816ftG7Ndt2nettrnbmU5LjQ2YPp7r7+2iVA8Ulbd+dODmRwduLowPfntBFPFrya8Tf1dYD8/4hnFZmWmTGHSHckHH/vP38oobnOm0uDD2Yl4Iyde7pFq09adygUjmTKctjA+ePp4b4ucmfaI+frXpnX3X3tl3bUVy+Pp5UZZ6YgSgXN59e34VzDMEkUGexV+8bKLMz6Z917p6VGwWY8+b0zCxQUm16PWcS7BPhVnoWSspkeXP4fczZ3W8VosIr3sMgzjv3qPs33LgFrw0+/wpQdtXPI8hkFAsn//ZedhOH343SdflffxTObwkP4SbEJBIlYu/uKArV5v91ymYFeglUuWWg7fgZZYzUse+/6eJmLGloU02c8uZPvWgM512/ONZw1vc1I5C1ZPXH2K2vBDOMcWJdp+6uyqnDOb6ya0z8XFw0gTu8Y9nwcoTHTLlsn+WGCgcN1Sjnpz5K8z1xGjunje1LJoe4ueOiKm8nnMJ0cxAY8PeawjXY0J9MJNfHA/G31+frOsa7jR1YoaIGR+chrmeljD681fj8H5UuD8LFiTtUw8u+8dFiVQJ6E7kDuJXvJ88xvh031tYD6+VDkHQB/81UdcIPinEO3PpJOTjum/5QxXyHB6EYvmK7FL4UXi5OX23PkHXnh4ufyRA+9SDb++9ir9NtG7HW/O0iKfyIvwwBW2H300SHVwmOrjsy/TJ6J8mfVcZrAMXyHFF/wkD9/+/pK4e1ZaDtwDddaKmSYu2DskZHPLg14kRwftAjiuxYszq2ePQdYvrvv3NDBZr3bd8JFhHRNm1RtjHUfI7lY2P0eJEPcr+rCNV6P0TokZoPc6cuED0x3Oa+vEwlmeXIHMgGbPG6gpGJVLl8asPUWN1M1rDDISqGtCqF0lyBoc8Pv6pHPn3iqQwvfuvSA5DXg/YYpm0COdseSu6/KZDqsQIRUEQJH2ivvuwCymYQ3D6RjPiLp/T1LQJ5Ljqem1Gj9AY3E7fbMEY70OljehRt13HJZULOg6XCjBKoOcrHxEXfdgv3bVqXBp3JrKA34RWoUoYrz8Ht2hqMEJ32GLlrB4wXa5t9ykNBXdYtYvkdxvbpMi/a1u6NXwMpk6rgRk/O2TKHmU/+t3Y8ctt9A65p2sx6QQix+x3YN11wFdb6gqjO2kgfrkiRH8cO9JD71c4HozIIE/0S1JaI9IlF264144R98pdyyPvzhHU5BAIl+OFzdDz0HiV5v0bpiMxg16gRfMA3TWAFyOHjKoJrFANXK0Xow0eSSMdPcobTXd+ndhEdD9f+QjzQIjFvQgQqammJu5W6NqzS1MENzLIE/1YzpZruPIxoT4mune7C1VjQn3wG9uMV9LY2tGrWZtA1iHBaLsSKC0bCPRLBUGQr+fwZ2oSokag9XvlCrXWTCUEQTfvS9AfMZN6As1vebhYcUsKtege4ueO0WKGcNlfQ6BVyHwYTkJzR6+JnoC0t4+kB0LGB9ukWWh04GIDfrceZf8J1FxHZJDniuRwzYBKAdkKKDfNlBqLHSiv1IrNmQgiA9M13Sk1+d3dqzLkaG/Ni1o3NxL5uK/oHt7A55y4g+RSIoM8f34vmdjBs2r2U47u6+dFOWs2LAtEMl2j8NANHhNv28h8sVep1htjGAV+ntgkiYFp/i1pkw6/m4RMHczccmZvYb1CNQBBkESq/DDvJpJjiQn1OfHxLPzcLebdJlC+BnQfzhCMGUwhCCKficOjStgJ/7qwC455l6qFj8kcpEXTe4kLY5sqWMex7Zagw8BjJk3gXv7HXNix6VMPfnKoYvRf81/eVjThzYK84oZAjmt6SvjRzJQz21K1JuYD2W7oj3KFGj2ZZV2gYgHw+3+aePzqQ7SnkV/2YNOi6GGkuuHKrdy1PDi/wXRySIrmwoWBfwQGD7vIdI2Ua3IuaYK/ie4d/yIdKWs0MBMiFMuP/tZ0trzFnUlfwgv293GBz8LxYAawXfU+1cljOBhzk3+pkWq1X1ZMdzeG49drpi77Zwl6TN95rGZL2qShHirzx5sQBHm5OSNblk4PRdO9qKJV75xfj7K/trkLHcyZbvEm/Dx/YcWjYeumF/Cb9p27hyTy+dnzhlG+z4vwxWzJK25YPWccRToBrNuZQcbfjFSN3v7c07VDrb4o4DfBv7SX+zO6z4kLQFdE8eva9QYGmNn4LWkxJn3V8cX9q3dfRvwx8jhb3rruWz5m0moYgNtcMBszvr4MfHdj4vNX4+ZPCUJvSfv7RfJN1kKx/IO8m/C/R2qmET9/NQ7zIhEfatfxO8i/Z8eONHU34NsLsMF6i6T31ewSvYxf882V7IIa5CN+hvWVbUUf5t0sqRbx68SY/4RiOcHxP/5LLGZLbXP3mm+uEF+PQjWwJOvCodJG4MyQwp43X/T1fNaa0CLpfe1fpT9tTtLrbkqkypU7LyEVfJhsAy/C79PlsUgZTP7lB+kzx+jyFvYW1iPdD2Fc1u6107Tu9kSpNtZdh/i5f7Fy8ubvr6M38uval2RdyF3L0+pCwB1P7d3K7SueRzZOCvFOTwnPK36Wa+/qUeUVN6C3YANlFmP8KK+5LwRhqkQnhXhvWhS981gNeuPJ682yJyVfr5mqtWuJXyfe8N01Z0eHBfGjqMMoh23btlGZ8ckT/EePcL9xX/Kkrx/OkJTd/X1WTICr7gZNoVi+8l+X7j2SIvm15YlhWiPCq/V/LOh1vb593gtB+GPy68Rr/4ePuOy/fJji5aY9436zoePMrRZ0fulP00Lwu924LzmBKtl1d3HCXxsEQROCvVkudGQhNBi/dyl+KhE0iXueQpBEqmjp6C27Kz55vfnbM3Vf5Fc9fQod3JwYqlnb+NKkkdInqgrS/syTvv6m9p5zlY9OXHuYNIGLjnl4EX5K9QBm/rWpveenEkHb4yfqgafIJf1yRZh7unbnsTu+HswDm2ZgUquWhXUsmgcvEPnN6buwDx3IcX17/vjFvGC8md996u7OYzWIqz1/StDOjHhdha9I8x58zJw34tFZmgJ+0zv7rsGHmj8lKGf1VF2jSgG/CVnnDMG6uZFrZj/rKFeoBkprRJ8cKsfkrTNSx+pq66wSdq7efZlMnnt27Mjda6cR3CZ6dSqSYLMYV3fOxxyzpFq0fs9VMtNz6SnhW5fFUq1H2zrojjDmWn37xeo2fp24trnbnUmPC2P7eTLZHowOqfJ+m7S2uQtmJ2zRyXTpw63Z/ylrhL/Ii/CNDPKSP1Hz68UwzyKDPLekxejy1zfsvXbmVgsBk2JCfXLX8vafv3/0NyGmEByNyCDPf697UWvC51Bp4/7z9zC1NOjjvzUvijhT2aPsf+Pry6U1osggT5V6kPwqglrX4oQXPT54UaDrOLwI302Lok26DK1d0B3zE1YLHwvFPfWt3YI2mZ8nM5TrHubvEcZlDS9LWFItKhd0tHb0irsVDDpthJeLv4/L3BeCiNNtDW0yvXU4vAg/ZAV6AsSEsglsYY+y/+Z9Sbmg4+7DTgiCAjhu4wI8ySwccKi0cccvt+UK1Q8bZmh9aRWqgXuPpDfutV+tE6NTtDBxj2a+RBAg3XnYBV+SE90hkOMWGeiZEDWCggsQWD3dAfRCIlW+tusSnIjMXDpRa6Mq3u1ZlVOGHjrObEu1pWcCltO3TfQo+1/5tAhJur8+cyyZb82JC0Bn/ScGe9vYYwF0t038+0wdEuOyWQzyK42h132YpznvAegOQFGgi3zkiiFUESNT14nRXGqGm4DuAFio+p9NkfapB0kuj6NQDeSXPYAgKJDjSrC4DaA7ALUwdZyGYX4/74beunmFamBVTlmHTJkYzf31k1Ty/o8VAWRmbBNwvQq6PiyQ4/rBnyZqXZ5XIlX+XNZ4sETQo1B/lBZDvM4UoDsAFYFe3BjZyGYxUib6ozvN7z7sLKx4FMhxnT9l1IYF423SqAO625GZL60RHb/aVFItQnjv5ebk487w9WREBnmNC/B8YQzHUvLLZsb/ASVMLkcX5+2qAAAAAElFTkSuQmCC"></span>
+    <div class="logo-t">Class Changes<small>Add, drop or swap a class</small></div></div>
+  <div class="hdr-r">
+    <div class="tabs" id="tabs" role="group" aria-label="View">
+      <button data-a="view" data-v="student" aria-pressed="true">Student</button>
+      <button data-a="view" data-v="approver" aria-pressed="false">Approver</button>
+    </div>
+    <div class="who"><b>Sample Student</b>ID ending 1234 (sample data)</div>
+  </div>
+</div></header>
+<div class="proto"><div class="proto-in">
+  <span>Prototype controls</span>
+  <span>Today is</span>
+  <div class="seg" id="simseg" role="group" aria-label="Simulated date">
+    <button data-a="sim" data-v="before" aria-pressed="true">Aug 31 (refund open)</button>
+    <button data-a="sim" data-v="after" aria-pressed="false">Oct 8 (refund closed)</button>
+  </div>
+  <button class="lnk" data-a="reset">Reset demo</button>
+</div></div>
+<main id="app"></main>
+<div id="wiz"></div>
+<div id="toast"></div>
+
+<script>
+(function(){
+const DEADLINE='Sep 4, 2026';
+const ROLES={chair:'Department Chair / Assistant',instructor:'Instructor',dean:'Dean of Students'};
+const CUR=[
+ {code:'ENC 1101',name:'Freshman Composition I',sec:'1431',time:'Mon, Wed 9:00 to 10:15 AM',campus:'Kendall Campus',inst:'Prof. Alvarez',cr:3},
+ {code:'MAC 1105',name:'College Algebra',sec:'2210',time:'Tue, Thu 11:00 AM to 12:15 PM',campus:'North Campus',inst:'Prof. Okafor',cr:3},
+ {code:'SPC 1017',name:'Fundamentals of Speech',sec:'3302',time:'Fri 10:00 AM to 12:45 PM',campus:'Wolfson Campus',inst:'Prof. Delgado',cr:3,hold:'Department hold (Communication)'},
+ {code:'HUM 2020',name:'Humanities Survey',sec:'4125',time:'Online, self-paced',campus:'Virtual College',inst:'Prof. Nguyen',cr:3}
+];
+const CAT=[
+ {code:'BSC 1010',name:'Biology I',sec:'5120',time:'Mon, Wed 1:00 to 2:15 PM',campus:'Kendall Campus',inst:'Prof. Reyes',cr:3,seats:30,cap:30},
+ {code:'MAC 2311',name:'Calculus I',sec:'5231',time:'Tue, Thu 9:30 to 10:45 AM',campus:'North Campus',inst:'Prof. Chen',cr:3,seats:24,cap:35,prereq:'MAC 1147 is not on your record'},
+ {code:'CHM 1045',name:'General Chemistry I',sec:'5522',time:'Mon, Wed 3:00 to 4:15 PM',campus:'Kendall Campus',inst:'Prof. Silva',cr:3,seats:18,cap:30,hold:'Department hold (Natural Sciences)'},
+ {code:'PSY 2012',name:'General Psychology',sec:'5344',time:'Mon, Wed 11:00 AM to 12:15 PM',campus:'Kendall Campus',inst:'Prof. Haddad',cr:3,seats:27,cap:35},
+ {code:'STA 2023',name:'Statistics I',sec:'5410',time:'Tue, Thu 1:00 to 2:15 PM',campus:'Wolfson Campus',inst:'Prof. Barros',cr:3,seats:31,cap:40}
+];
+const ALL=[...CUR,...CAT]; const get=c=>ALL.find(x=>x.code===c);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $=s=>document.querySelector(s);
+const KEY='mdc-class-changes-v1';
+let S, W=null, toastT;
+
+function fresh(){
+  S={sim:'before',view:'student',role:'chair',seq:1042,courses:CUR.map(c=>c.code),reqs:[],notes:[]};
+  S.notes.push({t:'Welcome. Your requests and decisions will appear here.',d:'Aug 31',n:false});
+  submit('add',null,'BSC 1010','I need Biology I to stay on track for my nursing prerequisites.',true);
+  S.notes.forEach(n=>n.n=false);
+}
+function load(){try{const j=localStorage.getItem(KEY);if(j){S=JSON.parse(j);return}}catch(e){}fresh()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const dateLabel=()=>S.sim==='before'?'Aug 31':'Oct 8';
+const isLate=()=>S.sim==='after';
+
+function blockers(c){const b=[];if(!c)return b;
+  if(c.cap&&c.seats>=c.cap)b.push('Class is full ('+c.seats+'/'+c.cap+')');
+  if(c.prereq)b.push('Prerequisite missing: '+c.prereq);
+  if(c.hold)b.push(c.hold);return b}
+function enrolled(){return S.courses.map(get)}
+function credits(){return enrolled().reduce((a,c)=>a+c.cr,0)}
+const step=(role,course)=>({role,name:role==='instructor'?'Instructor, '+get(course).inst:ROLES[role],state:'waiting'});
+
+function route(type,drop,add,late){
+  const a=add?get(add):null,d=drop?get(drop):null,bl=blockers(a);
+  if(type==='add'){
+    if(late)return{sc:'A3',steps:[step('instructor',add)],
+      why:'The 100% refund deadline ('+DEADLINE+') has passed, so this is a late registration. Only the instructor of '+add+' needs to approve it.'};
+    if(bl.length)return{sc:'A1',steps:[step('chair')],
+      why:'You cannot add this class on your own because: '+bl.join('; ').toLowerCase()+'. The department can grant an override.'};
+    return{sc:'direct',steps:[],why:'This class is open and you meet the requirements. No approval is needed.'};
+  }
+  if(type==='drop'){
+    if(late)return{sc:'D3',steps:[step('dean')],
+      why:'The 100% refund deadline ('+DEADLINE+') has passed. A drop with a refund needs a one-time exception from the Dean of Students.'};
+    if(d.hold)return{sc:'D1',steps:[step('chair')],
+      why:'A department hold stops you from dropping this class yourself. The Chair or Advisor can lift the hold for this class only.'};
+    return{sc:'direct',steps:[],why:'You are inside the 100% refund window and have no holds. No approval is needed.'};
+  }
+  if(late)return{sc:'S3',steps:[step('instructor',add),step('dean')],
+    why:'The 100% refund deadline ('+DEADLINE+') has passed. The instructor of '+add+' approves the late admission first, then the Dean of Students approves moving your tuition without a penalty or a W.'};
+  if(bl.length)return{sc:'S1',steps:[step('chair')],
+    why:'The swap is blocked because: '+bl.join('; ').toLowerCase()+'. The department for '+add+' can authorize an override.'};
+  return{sc:'direct',steps:[],why:'The new class is open and you meet the requirements. No approval is needed.'};
+}
+
+function title(r){
+  if(r.type==='add')return 'Add '+r.add;
+  if(r.type==='drop')return 'Drop '+r.drop;
+  return 'Swap '+r.drop+' for '+r.add}
+const log=(r,t)=>r.audit.push(r.date+': '+t);
+const notify=t=>S.notes.unshift({t,d:dateLabel(),n:true});
+
+function submit(type,drop,add,note,sample){
+  const rt=route(type,drop,add,isLate());
+  const r={id:'REQ-'+(S.seq++),type,drop,add,late:isLate(),sc:rt.sc,date:dateLabel(),note:note||'',sample:!!sample,
+    steps:rt.steps,status:'pending',audit:[],outcome:''};
+  log(r,'Submitted by student');
+  if(!r.steps.length){log(r,'No approval needed');finish(r)}
+  else{r.steps[0].state='active';log(r,'Routed to '+r.steps[0].name);
+    notify(title(r)+' sent to '+r.steps[0].name+' for review.')}
+  S.reqs.unshift(r);return r}
+
+function enroll(c){if(!S.courses.includes(c))S.courses.push(c)}
+function unenroll(c){S.courses=S.courses.filter(x=>x!==c)}
+function finish(r){
+  if(r.type==='add'){enroll(r.add);log(r,'Enrollment added in the SIS (simulated)');
+    r.outcome='You are enrolled in '+r.add+'. A confirmation with the syllabus and Canvas link was sent.'}
+  else if(r.type==='drop'){unenroll(r.drop);log(r,'Class dropped in the SIS (simulated)');
+    r.outcome=r.sc==='D3'?'Dropped '+r.drop+' with a 100% refund override.':'Dropped '+r.drop+' with a 100% refund.'}
+  else{enroll(r.add);log(r,'Step 1: '+r.add+' added');unenroll(r.drop);log(r,'Step 2: '+r.drop+' dropped');
+    log(r,'Tuition balance transferred to '+r.add);
+    r.outcome='Swap complete. You are in '+r.add+', '+r.drop+' was dropped, and your tuition moved to the new class with no penalty or W.'}
+  r.status='completed';notify(title(r)+': '+r.outcome)}
+function alts(except){
+  return CAT.filter(c=>c.code!==except&&!S.courses.includes(c.code)&&!blockers(c).length)
+    .map(c=>c.code+' (section '+c.sec+', '+(c.cap-c.seats)+' seats open)').slice(0,3)}
+function deny(r,st,reason){
+  const why=reason?' Reason: '+reason:'';
+  if(r.sc==='D3'){r.status='needs';
+    notify('The Dean did not approve a refund for '+r.drop+'.'+why+' If you continue, it will be a W with no refund. Your confirmation is needed.');return}
+  r.status='denied';
+  if(r.type==='drop'){r.outcome='Not approved. You remain enrolled in '+r.drop+'.'+why;notify(title(r)+' was not approved.'+why)}
+  else{const al=alts(r.add);
+    r.outcome=(r.type==='swap'?'Swap not approved. You stay in '+r.drop+'.':'Add not approved.')+why+(al.length?' Other open sections: '+al.join('; ')+'.':'');
+    notify(title(r)+' was not approved.'+why+(al.length?' Open options: '+al.join('; ')+'.':''))}}
+
+function decide(id,ok,reason){
+  const r=S.reqs.find(x=>x.id===id);if(!r)return;
+  const st=r.steps.find(s=>s.state==='active');if(!st)return;
+  st.note=reason;log(r,st.name+(ok?' approved':' denied')+(reason?' ('+reason+')':''));
+  if(ok){st.state='approved';const nx=r.steps.find(s=>s.state==='waiting');
+    if(nx){nx.state='active';log(r,'Routed to '+nx.name);notify(title(r)+' approved by '+st.name+'. Now with '+nx.name+'.')}
+    else finish(r)}
+  else{st.state='denied';r.steps.forEach(s=>{if(s.state==='waiting')s.state='skipped'});deny(r,st,reason)}
+  save();render();toast(ok?'Decision recorded: approved':'Decision recorded: denied')}
+function reassign(id){
+  const r=S.reqs.find(x=>x.id===id),st=r.steps.find(s=>s.state==='active');
+  st.alt=true;log(r,'Approver unavailable. Rerouted to an authorized alternate for '+st.name);
+  notify(title(r)+' moved to an alternate '+st.name+' so it keeps moving.');save();render();toast('Rerouted to an alternate approver')}
+function studentConfirm(id,yes){
+  const r=S.reqs.find(x=>x.id===id);
+  if(yes){unenroll(r.drop);r.status='completed';r.outcome='Dropped '+r.drop+' as a W (withdrawal) with no refund.';log(r,'Student confirmed withdrawal with a W');notify(r.outcome)}
+  else{r.status='cancelled';r.outcome='Request cancelled. You remain enrolled in '+r.drop+'.';log(r,'Student cancelled the request');notify(r.outcome)}
+  save();render();toast(yes?'Withdrawal confirmed':'Request cancelled')}
+
+/* ---------- views ---------- */
+const STAT={pending:['In review',''],completed:['Completed','ok'],denied:['Not approved','bad'],needs:['Needs your answer','warn'],cancelled:['Cancelled','']};
+function chip(t,c){return '<span class="chip '+(c||'')+'">'+esc(t)+'</span>'}
+function seatsChip(c){if(!c.cap)return '';const open=c.cap-c.seats;
+  return open<=0?chip('Full '+c.seats+'/'+c.cap,'bad'):chip(open+' seats open','ok')}
+
+function timeline(r){
+  const items=[{c:'done',i:'✓',t:'Request submitted',s:r.date}];
+  r.steps.forEach(s=>{
+    const m={approved:['done','✓','Approved'],denied:['no','✕','Denied'],active:['act','●','Reviewing now'],waiting:['','','Waiting'],skipped:['skip','','Not needed']}[s.state];
+    items.push({c:m[0],i:m[1],t:s.name+(s.alt?' (alternate)':''),s:m[2]+(s.note?': '+s.note:'')})});
+  const last={completed:['done','✓','Schedule updated'],denied:['no','✕','Schedule unchanged'],cancelled:['skip','','Cancelled'],needs:['act','●','Waiting for you']}[r.status];
+  if(last)items.push({c:last[0],i:last[1],t:last[2],s:''});
+  else if(r.steps.length)items.push({c:'',i:'',t:'Schedule updated',s:'After all approvals'});
+  return '<ol class="tl">'+items.map(x=>'<li class="'+x.c+'"><i>'+x.i+'</i><div>'+esc(x.t)+(x.s?'<small>'+esc(x.s)+'</small>':'')+'</div></li>').join('')+'</ol>'}
+
+function reqCard(r){
+  const st=STAT[r.status],cur=r.steps.find(s=>s.state==='active');
+  return '<article class="req"><div class="req-top"><div><div class="req-title">'+esc(title(r))+'</div><div class="req-id">'+r.id+' · '+r.date+(r.sample?' · sample request':'')+'</div></div>'+chip(st[0],st[1])+'</div>'
+  +(r.status==='pending'&&cur?'<p class="now">Now with <b>'+esc(cur.name)+(cur.alt?' (alternate)':'')+'</b>. You will get an update here after their decision.</p>':'')
+  +(r.outcome?'<p class="result '+(r.status==='denied'||r.status==='cancelled'?'bad':'')+'">'+esc(r.outcome)+'</p>':'')
+  +(r.status==='needs'?'<div class="confirm"><p><b>Your choice:</b> the Dean did not approve a refund. You can still withdraw from '+esc(r.drop)+' as a <b>W</b> with no refund, or keep the class.</p><div class="row"><button class="btn sm" data-a="conf" data-id="'+r.id+'" data-v="1">Withdraw with a W</button><button class="btn ghost sm" data-a="conf" data-id="'+r.id+'" data-v="0">Keep the class</button></div></div>':'')
+  +'<details><summary>See progress</summary>'+timeline(r)+'<ul class="audit">'+r.audit.map(a=>'<li>'+esc(a)+'</li>').join('')+'</ul></details></article>'}
+
+function studentView(){
+  const late=isLate();
+  const banner=late
+   ?'<div class="banner late"><span class="dot"></span><div><b>The 100% refund window closed on '+DEADLINE+'.</b><span>Any change now needs approval. We send it to the right person for you.</span></div></div>'
+   :'<div class="banner"><span class="dot"></span><div><b>The 100% refund window is open until '+DEADLINE+'.</b><span>Changes with no holds or blocks happen right away. Anything else goes to the right approver.</span></div></div>';
+  const courses=enrolled().map(c=>'<div class="course"><div><div><span class="c-code">'+c.code+'</span> · <span class="c-name">'+c.name+'</span></div>'
+    +'<div class="c-meta">Section '+c.sec+' · '+c.time+' · '+c.campus+' · '+c.inst+'</div>'
+    +(c.hold?'<div class="chips">'+chip(c.hold,'warn')+'</div>':'')+'</div>'
+    +'<div class="c-act"><button class="btn ghost sm" data-a="wiz" data-t="swap" data-d="'+c.code+'">Swap</button><button class="btn danger sm" data-a="wiz" data-t="drop" data-d="'+c.code+'">Drop</button></div></div>').join('');
+  const open=S.reqs.filter(r=>r.status==='pending'||r.status==='needs').length;
+  const reqs=S.reqs.length?S.reqs.map(reqCard).join(''):'<div class="empty">No requests yet. Pick Add, Drop or Swap to start.</div>';
+  const unread=S.notes.filter(n=>n.n).length;
+  const notes=S.notes.slice(0,6).map(n=>'<div class="note '+(n.n?'new':'')+'"><span class="u"></span><div>'+esc(n.t)+'<time>'+n.d+'</time></div></div>').join('');
+  return banner+'<div class="grid"><div class="stack">'
+   +'<section class="panel"><div class="panel-h"><div><h2>My schedule</h2><p>Fall 2026 · '+S.courses.length+' classes</p></div><button class="btn" data-a="wiz" data-t="add">+ Add a class</button></div><div class="panel-b">'+courses
+   +'<div class="credits"><span><b>'+credits()+'</b> credits enrolled</span><span>Refund deadline <b>'+DEADLINE+'</b></span></div></div></section></div>'
+   +'<div class="stack"><section class="panel"><div class="panel-h"><div><h2>My requests</h2><p>'+(open?open+' waiting':'Nothing waiting')+'</p></div></div><div class="panel-b">'+reqs+'</div></section>'
+   +'<section class="panel"><div class="panel-h"><div><h2>Updates</h2><p>'+(unread?unread+' new':'You are all caught up')+'</p></div>'+(unread?'<button class="btn ghost sm" data-a="read">Mark as read</button>':'')+'</div><div class="panel-b">'+notes+'</div></section></div></div>'
+   +'<p class="scope">Sample data only. Enrollment changes are simulated and no real student records are used.</p>'}
+
+function askText(r,st){
+  const a=r.add?get(r.add):null;
+  if(st.role==='instructor'){
+    const full=a&&a.cap&&a.seats>=a.cap;
+    if(full)return '<div class="alert">Class at capacity ('+a.seats+'/'+a.cap+'). Do you authorize an enrollment override'+(r.late?' and late admission':'')+'?</div>';
+    return '<div class="alert">Do you authorize late admission into '+a.code+'? The 100% refund deadline has passed.</div>'}
+  if(st.role==='dean'){
+    if(r.type==='swap')return '<div class="alert">Validate moving tuition from '+r.drop+' to '+r.add+' without a financial penalty or a W grade.</div>';
+    return '<div class="alert">Approve a 100% refund override to drop '+r.drop+' after the deadline? If you deny, the student may choose a W with no refund.</div>'}
+  if(r.type==='drop')return '<div class="alert">Lift the department hold for this section only so the student can drop '+r.drop+' with a 100% refund.</div>';
+  return '<div class="alert">Review the override for '+a.code+': '+esc(blockers(a).join('; '))+'. Approval enrolls the student'+(r.type==='swap'?' first, then drops '+r.drop+' and moves the tuition':'')+'.</div>'}
+
+function approverView(){
+  const roleBtns=Object.keys(ROLES).map(k=>{const n=S.reqs.filter(r=>r.status==='pending'&&r.steps.find(s=>s.state==='active'&&s.role===k)).length;
+    return '<button data-a="role" data-v="'+k+'" aria-pressed="'+(S.role===k)+'">'+ROLES[k]+' ('+n+')</button>'}).join('');
+  const q=S.reqs.filter(r=>r.status==='pending'&&r.steps.find(s=>s.state==='active'&&s.role===S.role));
+  const cards=q.map(r=>{const st=r.steps.find(s=>s.state==='active'),a=r.add?get(r.add):null,d=r.drop?get(r.drop):null;
+    return '<article class="ap"><div class="req-top"><div><div class="req-title">'+esc(title(r))+'</div><div class="req-id">'+r.id+' · Sample Student, ID ending 1234 · '+r.date+'</div></div>'+chip(r.late?'After refund deadline':'Before refund deadline',r.late?'warn':'')+'</div>'
+    +askText(r,st)
+    +'<div class="sum">'+(a?'<div><span>Adding</span><b>'+a.code+' '+a.name+', section '+a.sec+' · '+a.inst+'</b></div>':'')+(d?'<div><span>Dropping</span><b>'+d.code+' '+d.name+', section '+d.sec+'</b></div>':'')
+    +(r.note?'<div><span>Student note</span><b>'+esc(r.note)+'</b></div>':'')+'<div><span>Route</span><b>'+r.steps.map(s=>esc(s.role==='instructor'?'Instructor':ROLES[s.role])).join(' → ')+'</b></div></div>'
+    +'<label class="f" for="n-'+r.id+'">Reason (shown to the student if you deny)</label><textarea id="n-'+r.id+'" placeholder="Optional for approvals, helpful for denials"></textarea>'
+    +'<div class="ap-act"><button class="btn" data-a="dec" data-id="'+r.id+'" data-v="1">Approve</button><button class="btn danger" data-a="dec" data-id="'+r.id+'" data-v="0">Deny</button><button class="btn ghost" data-a="alt" data-id="'+r.id+'">Approver unavailable: reroute</button></div></article>'}).join('');
+  return '<section class="panel"><div class="panel-h"><div><h2>Approver workspace</h2><p>You only see requests that are waiting on the role you are acting as.</p></div></div><div class="panel-b">'
+   +'<p class="stepper" style="margin-bottom:8px">Acting as</p><div class="seg" role="group" aria-label="Acting as" style="margin-bottom:18px;width:fit-content;max-width:100%">'+roleBtns+'</div>'
+   +(cards||'<div class="empty">Nothing is waiting for the '+ROLES[S.role]+'. Submit a request as the student to see it here.</div>')+'</div></section>'
+   +'<p class="scope">Every decision is recorded in the request’s audit trail.</p>'}
+
+/* ---------- wizard ---------- */
+function openWiz(t,d){W={t,d:d||null,a:null,step:t==='drop'?2:1,note:''};drawWiz()}
+function closeWiz(){W=null;$('#wiz').innerHTML=''}
+function drawWiz(){
+  if(!W)return;
+  const T={add:'Add a class',drop:'Drop '+W.d,swap:'Swap '+W.d}[W.t];
+  const total=W.t==='drop'?1:2,n=W.t==='drop'?1:W.step;
+  let body='',foot='';
+  if(W.step===1){
+    const list=CAT.filter(c=>!S.courses.includes(c.code));
+    body='<p>'+(W.t==='swap'?'Choose the class you want instead of <b>'+W.d+'</b>.':'Choose the class you want to add.')+'</p><div class="opts" role="radiogroup" aria-label="Classes">'
+     +list.map(c=>'<label class="opt"><input type="radio" name="cls" value="'+c.code+'"'+(W.a===c.code?' checked':'')+'><div><b>'+c.code+' · '+c.name+'</b><div class="c-meta">Section '+c.sec+' · '+c.time+' · '+c.campus+' · '+c.inst+'</div>'
+     +'<div class="chips">'+seatsChip(c)+(c.prereq?chip('Prerequisite missing','warn'):'')+(c.hold?chip('Department hold','warn'):'')+'</div></div></label>').join('')+'</div>';
+    foot='<button class="btn ghost" data-a="wclose">Cancel</button><button class="btn" id="wnext" data-a="wnext"'+(W.a?'':' disabled')+'>Continue</button>';
+  }else{
+    const rt=route(W.t,W.d,W.a,isLate());
+    const a=W.a?get(W.a):null,d=W.d?get(W.d):null;
+    const needs=rt.steps.length>0;
+    body='<div class="sum">'+(d&&W.t!=='add'?'<div><span>Dropping</span><b>'+d.code+' · '+d.name+'</b></div>':'')+(a?'<div><span>Adding</span><b>'+a.code+' · '+a.name+'</b></div>':'')+'<div><span>Date</span><b>'+dateLabel()+', 2026'+(isLate()?' (after refund deadline)':' (refund window open)')+'</b></div></div>'
+     +'<div class="why '+(needs?'':'good')+'"><b>'+(needs?'Approval needed':'No approval needed')+'</b><span>'+esc(rt.why)+'</span></div>'
+     +(needs?'<div><p class="stepper" style="margin-bottom:8px">Who reviews it</p><div class="route">'+rt.steps.map((s,i)=>(i?'<span class="arrow">→</span>':'')+'<span class="chip">'+esc(s.name)+'</span>').join('')+'</div>'
+       +'<p class="c-meta" style="margin-top:8px">If a reviewer does not respond, the request is rerouted to an authorized alternate so it keeps moving.</p></div>'
+       +(W.t==='swap'?'<p class="c-meta">Your current class stays untouched until every approval is in. If anyone says no, you keep '+W.d+'.</p>':''):'')
+     +(needs?'<label class="f" for="wnote">Reason for your request (optional)</label><textarea id="wnote" placeholder="Tell the reviewer anything that helps">'+esc(W.note)+'</textarea>':'');
+    const lbl=needs?'Submit for approval':({add:'Add class now',drop:'Drop class now',swap:'Swap now'})[W.t];
+    foot=(W.t==='drop'?'<button class="btn ghost" data-a="wclose">Cancel</button>':'<button class="btn ghost" data-a="wback">Back</button>')+'<button class="btn" data-a="wsubmit" id="wgo">'+lbl+'</button>';
+  }
+  $('#wiz').innerHTML='<div class="scrim" data-a="wscrim"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="wt"><div class="m-h"><div><p class="stepper">Step '+n+' of '+total+'</p><h2 id="wt">'+esc(T)+'</h2></div><button class="x" data-a="wclose" aria-label="Close">×</button></div><div class="m-b">'+body+'</div><div class="m-f">'+foot+'</div></div></div>';
+  const g=$('#wgo');if(g)g.focus();
+}
+
+function toast(t){const el=$('#toast');el.innerHTML='<div class="toast" role="status">'+esc(t)+'</div>';clearTimeout(toastT);toastT=setTimeout(()=>{el.innerHTML=''},3200)}
+
+function render(){
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===S.view)));
+  document.querySelectorAll('#simseg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===S.sim)));
+  $('#app').innerHTML=S.view==='student'?studentView():approverView()}
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]');if(!el)return;
+  const a=el.dataset.a;
+  if(a==='wscrim'){if(e.target!==el)return;closeWiz();return}
+  if(a==='view'){S.view=el.dataset.v}
+  else if(a==='sim'){S.sim=el.dataset.v;toast(S.sim==='after'?'Simulating Oct 8: refund window closed':'Simulating Aug 31: refund window open')}
+  else if(a==='reset'){fresh();toast('Demo reset')}
+  else if(a==='role'){S.role=el.dataset.v}
+  else if(a==='read'){S.notes.forEach(n=>n.n=false)}
+  else if(a==='wiz'){openWiz(el.dataset.t,el.dataset.d);return}
+  else if(a==='wclose'){closeWiz();return}
+  else if(a==='wnext'){W.step=2;drawWiz();return}
+  else if(a==='wback'){W.step=1;drawWiz();return}
+  else if(a==='wsubmit'){
+    const nt=$('#wnote');const note=nt?nt.value.trim():'';
+    const r=submit(W.t,W.d,W.a,note);closeWiz();S.view='student';save();render();
+    toast(r.status==='completed'?'Done. Your schedule is updated':'Sent to '+r.steps[0].name);window.scrollTo({top:0,behavior:'smooth'});return}
+  else if(a==='dec'){const t=$('#n-'+el.dataset.id);decide(el.dataset.id,el.dataset.v==='1',t?t.value.trim():'');return}
+  else if(a==='alt'){reassign(el.dataset.id);return}
+  else if(a==='conf'){studentConfirm(el.dataset.id,el.dataset.v==='1');return}
+  save();render()});
+document.addEventListener('change',e=>{
+  if(W&&e.target.name==='cls'){W.a=e.target.value;const b=$('#wnext');if(b)b.disabled=false}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&W)closeWiz()});
+
+
+load();render();
+})();
+</script>
+
+</body></html>
